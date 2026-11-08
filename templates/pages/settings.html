@@ -1,0 +1,273 @@
+{% extends 'base.html' %}
+
+{% block title %}Settings & API Keys — PolyMind AI{% endblock %}
+
+{% block content %}
+<div class="flex-1 flex flex-col bg-slate-50 dark:bg-slate-900 overflow-y-auto text-slate-800 dark:text-slate-100 transition-colors">
+    <!-- Top Navbar -->
+    <header class="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur px-6 flex items-center justify-between sticky top-0 z-30">
+        <div class="flex items-center gap-3">
+            <a href="/chat/" class="p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" title="Back to Chat">
+                <i data-lucide="arrow-left" class="w-5 h-5"></i>
+            </a>
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-600/20 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/30 flex items-center justify-center">
+                    <i data-lucide="settings" class="w-4 h-4"></i>
+                </div>
+                <div>
+                    <h1 class="text-base font-semibold text-slate-800 dark:text-white">AI Configuration & API Keys</h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Configure provider keys & default model settings</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <!-- Theme toggle button -->
+            <button onclick="ThemeManager.toggle()"
+                class="p-2 text-slate-500 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg border border-slate-200 dark:border-slate-700 transition-colors flex items-center gap-1.5" title="Toggle Theme">
+                <i data-lucide="sun" class="w-4 h-4 text-amber-500 dark:text-amber-400 theme-toggle-icon"></i>
+            </button>
+            <a href="/profile/" class="px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg border border-slate-200 dark:border-slate-700 transition-colors flex items-center gap-1.5">
+                <i data-lucide="user" class="w-3.5 h-3.5"></i>
+                <span>Profile</span>
+            </a>
+            <a href="/chat/" class="px-3 py-1.5 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg shadow-sm transition-colors flex items-center gap-1.5">
+                <i data-lucide="message-square" class="w-3.5 h-3.5"></i>
+                <span>Return to Chat</span>
+            </a>
+        </div>
+    </header>
+
+    <div class="max-w-4xl w-full mx-auto p-6 md:p-8 space-y-8">
+        <!-- Banner -->
+        <div class="bg-gradient-to-r from-indigo-50 via-purple-50 to-slate-100 dark:from-indigo-900/40 dark:via-purple-900/20 dark:to-slate-800/40 border border-indigo-200 dark:border-indigo-500/20 rounded-2xl p-6 shadow-sm">
+            <div class="flex items-start gap-4">
+                <div class="p-3 bg-indigo-100 dark:bg-indigo-500/10 rounded-xl text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/20">
+                    <i data-lucide="key" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h2 class="text-lg font-bold text-slate-800 dark:text-white">Your Personal LLM API Keys</h2>
+                    <p class="text-sm text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+                        Keys are stored securely in your private user profile. You can query Mistral AI models directly using your Mistral API key, or use OpenRouter, OpenAI, Gemini and Groq.
+                        When configured, you can switch seamlessly between models right on the chat board!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Container -->
+        <form id="settings-form" onsubmit="saveSettings(event)" class="space-y-6">
+            <!-- Preferred Default Model -->
+            <div class="bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 rounded-2xl p-6 space-y-4 shadow-sm">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-base font-semibold text-slate-800 dark:text-white">Default Preferred Model</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">The model selected by default when you start a new conversation</p>
+                    </div>
+                    <span id="active-model-badge" class="px-2.5 py-1 text-xs rounded-full bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/20 font-mono">
+                        Loading...
+                    </span>
+                </div>
+
+                <div>
+                    <select id="preferred_model" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <optgroup label="Mistral AI (Native API & OpenRouter)">
+                            <option value="mistral-tiny">Mistral 7B (Tiny) — Fast & Light</option>
+                            <option value="mistral-small-latest">Mistral Small (24B Latest) — Balanced SOTA</option>
+                            <option value="mistral-medium-latest">Mistral Medium — High Reasoning</option>
+                            <option value="mistral-large-latest">Mistral Large 2 (Flagship) — Pro 128k</option>
+                            <option value="codestral-latest">Codestral (Mistral Code) — Specialized</option>
+                            <option value="mistralai/mistral-7b-instruct:free">Mistral 7B Free (OpenRouter)</option>
+                        </optgroup>
+                        <optgroup label="OpenAI Models">
+                            <option value="gpt-4o-mini">GPT-4o Mini — Fast & Smart</option>
+                            <option value="gpt-4o">GPT-4o (Omni) — Flagship Multimodal</option>
+                            <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                        </optgroup>
+                        <optgroup label="Google Gemini">
+                            <option value="google/gemini-2.0-flash-exp:free">Gemini 2.0 Flash (Free)</option>
+                        </optgroup>
+                        <optgroup label="Meta Llama & Groq">
+                            <option value="meta-llama/llama-3.3-70b-instruct:free">Llama 3.3 70B (OpenRouter Free)</option>
+                            <option value="llama-3.3-70b-versatile">Groq Llama 3.3 70B (Ultra-Speed)</option>
+                        </optgroup>
+                    </select>
+                </div>
+            </div>
+
+            <!-- API Keys Section -->
+            <div class="bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 rounded-2xl p-6 space-y-6 shadow-sm">
+                <div>
+                    <h3 class="text-base font-semibold text-slate-800 dark:text-white">API Keys Management</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Enter your credentials below. Leave blank to use server environment defaults or free tiers.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <!-- Mistral API Key -->
+                    <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-amber-200 dark:border-amber-500/20 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <label class="text-xs font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
+                                <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+                                <span>Mistral API Key</span>
+                            </label>
+                            <span class="text-[10px] px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-medium">Native Mistral</span>
+                        </div>
+                        <input type="password" id="mistral_api_key" placeholder="Enter Mistral API Key..."
+                               class="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700/80 rounded-lg px-3.5 py-2 text-xs text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50">
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Powers Mistral Tiny, Small, Medium, Large & Codestral directly via console.mistral.ai</p>
+                    </div>
+
+                    <!-- OpenRouter API Key -->
+                    <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/80 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <label class="text-xs font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5">
+                                <i data-lucide="globe" class="w-3.5 h-3.5"></i>
+                                <span>OpenRouter API Key</span>
+                            </label>
+                            <span class="text-[10px] px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 font-medium">Free Tiers</span>
+                        </div>
+                        <input type="password" id="openrouter_api_key" placeholder="sk-or-v1-..."
+                               class="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700/80 rounded-lg px-3.5 py-2 text-xs text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50">
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Access free Mistral 7B, Llama 3.3 70B & Gemini without paid credit.</p>
+                    </div>
+
+                    <!-- OpenAI API Key -->
+                    <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/80 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <label class="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                                <i data-lucide="cpu" class="w-3.5 h-3.5"></i>
+                                <span>OpenAI API Key</span>
+                            </label>
+                            <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-medium">OpenAI</span>
+                        </div>
+                        <input type="password" id="openai_api_key" placeholder="sk-..."
+                               class="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700/80 rounded-lg px-3.5 py-2 text-xs text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50">
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Powers GPT-4o, GPT-4o Mini and Ada embeddings.</p>
+                    </div>
+
+                    <!-- Groq API Key -->
+                    <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/80 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <label class="text-xs font-bold text-orange-600 dark:text-orange-400 flex items-center gap-1.5">
+                                <i data-lucide="flame" class="w-3.5 h-3.5"></i>
+                                <span>Groq API Key</span>
+                            </label>
+                            <span class="text-[10px] px-2 py-0.5 rounded bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20 font-medium">Fast LPU</span>
+                        </div>
+                        <input type="password" id="groq_api_key" placeholder="gsk_..."
+                               class="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700/80 rounded-lg px-3.5 py-2 text-xs text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50">
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Ultra-fast inference for Llama 3 models on Groq.</p>
+                    </div>
+
+                    <!-- Gemini API Key -->
+                    <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/80 space-y-2 md:col-span-2">
+                        <div class="flex items-center justify-between">
+                            <label class="text-xs font-bold text-sky-600 dark:text-sky-400 flex items-center gap-1.5">
+                                <i data-lucide="sparkle" class="w-3.5 h-3.5"></i>
+                                <span>Google Gemini API Key</span>
+                            </label>
+                            <span class="text-[10px] px-2 py-0.5 rounded bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 font-medium">Google AI</span>
+                        </div>
+                        <input type="password" id="gemini_api_key" placeholder="AIzaSy..."
+                               class="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700/80 rounded-lg px-3.5 py-2 text-xs text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500/50">
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Google AI Studio API key for Gemini models.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Save Action Button -->
+            <div class="flex items-center justify-end gap-3 pt-2">
+                <a href="/chat/" class="px-5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 text-sm font-medium transition-colors">
+                    Cancel
+                </a>
+                <button type="submit" id="btn-save-settings"
+                        class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm shadow-lg shadow-indigo-600/30 transition-all flex items-center gap-2">
+                    <i data-lucide="check" class="w-4 h-4"></i>
+                    <span>Save Configuration</span>
+                </button>
+            </div>
+        </form>
+                    Cancel
+                </a>
+                <button type="submit" id="btn-save-settings"
+                        class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm shadow-lg shadow-indigo-600/30 transition-all flex items-center gap-2">
+                    <i data-lucide="check" class="w-4 h-4"></i>
+                    <span>Save Configuration</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    if (!API.isAuthenticated()) {
+        window.location.href = '/auth/';
+    }
+
+    async function loadSettings() {
+        try {
+            const res = await API.fetch('/api/users/profile/');
+            if (!res.ok) {
+                if (res.status === 401) window.location.href = '/auth/';
+                return;
+            }
+            const data = await res.json();
+
+            if (data.preferred_model) {
+                document.getElementById('preferred_model').value = data.preferred_model;
+                document.getElementById('active-model-badge').textContent = data.preferred_model;
+            }
+
+            if (data.mistral_api_key) document.getElementById('mistral_api_key').value = data.mistral_api_key;
+            if (data.openrouter_api_key) document.getElementById('openrouter_api_key').value = data.openrouter_api_key;
+            if (data.openai_api_key) document.getElementById('openai_api_key').value = data.openai_api_key;
+            if (data.groq_api_key) document.getElementById('groq_api_key').value = data.groq_api_key;
+            if (data.gemini_api_key) document.getElementById('gemini_api_key').value = data.gemini_api_key;
+
+        } catch (e) {
+            showToast('Failed to load user settings', 'error');
+        }
+    }
+
+    async function saveSettings(e) {
+        e.preventDefault();
+        const btn = document.getElementById('btn-save-settings');
+        btn.disabled = true;
+        btn.innerHTML = `<span>Saving...</span>`;
+
+        const payload = {
+            preferred_model: document.getElementById('preferred_model').value,
+            mistral_api_key: document.getElementById('mistral_api_key').value.trim(),
+            openrouter_api_key: document.getElementById('openrouter_api_key').value.trim(),
+            openai_api_key: document.getElementById('openai_api_key').value.trim(),
+            groq_api_key: document.getElementById('groq_api_key').value.trim(),
+            gemini_api_key: document.getElementById('gemini_api_key').value.trim(),
+        };
+
+        try {
+            const res = await API.fetch('/api/users/profile/', {
+                method: 'PATCH',
+                body: JSON.stringify(payload)
+            });
+
+            if (res.ok) {
+                showToast('Settings & API Keys saved successfully!', 'success');
+                document.getElementById('active-model-badge').textContent = payload.preferred_model;
+            } else {
+                showToast('Failed to save settings', 'error');
+            }
+        } catch (err) {
+            showToast('Network error saving settings', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i><span>Save Configuration</span>`;
+            lucide.createIcons();
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadSettings);
+</script>
+{% endblock %}
+
