@@ -1,9 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}PolyMind AI{% endblock %}</title>
+
+    <!-- ── Theme: apply before paint to avoid flash ── -->
+    <script>
+        (function() {
+            var saved = localStorage.getItem('polymind_theme');
+            var html = document.documentElement;
+            if (saved === 'light') { html.classList.remove('dark'); }
+            else { html.classList.add('dark'); }
+        })();
+    </script>
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -72,7 +83,7 @@
     </style>
     {% block extra_head %}{% endblock %}
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-indigo-500 selection:text-white">
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 min-h-screen flex flex-col antialiased selection:bg-indigo-500 selection:text-white transition-colors">
 
     <div class="flex-1 flex overflow-hidden">
         {% block content %}{% endblock %}
@@ -83,6 +94,32 @@
 
     <!-- Global App Helpers -->
     <script>
+        /* ── Theme Manager ── */
+        const ThemeManager = {
+            getTheme() { return localStorage.getItem('polymind_theme') || 'dark'; },
+            setTheme(theme) {
+                localStorage.setItem('polymind_theme', theme);
+                if (theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+                this.updateIcons();
+            },
+            toggle() {
+                this.setTheme(this.getTheme() === 'dark' ? 'light' : 'dark');
+            },
+            updateIcons() {
+                const isDark = document.documentElement.classList.contains('dark');
+                document.querySelectorAll('.theme-btn').forEach(btn => {
+                    btn.innerHTML = isDark
+                        ? '<i data-lucide="sun" class="w-4 h-4 text-amber-400"></i>'
+                        : '<i data-lucide="moon" class="w-4 h-4 text-slate-700"></i>';
+                });
+                if (window.lucide) { lucide.createIcons(); }
+            }
+        };
+
         // Authentication & API helper
         const API = {
             getToken() {
@@ -179,6 +216,8 @@
             if (window.lucide) {
                 lucide.createIcons();
             }
+            // Apply saved theme icons after icons are created
+            ThemeManager.updateIcons();
         });
     </script>
     {% block extra_js %}{% endblock %}

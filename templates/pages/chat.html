@@ -31,7 +31,9 @@
   .model-glow { box-shadow: 0 0 10px rgba(99,102,241,.3); }
 
   /* Glass morphism */
-  .glass { background: rgba(15,23,42,.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+  .glass { backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+  .dark .glass { background: rgba(15,23,42,.85); }
+  :not(.dark) .glass { background: rgba(255,255,255,.9); }
 
   /* Gradient brand text */
   .brand-gradient { background: linear-gradient(135deg, #6366f1, #a855f7, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
@@ -40,16 +42,47 @@
   .session-item:hover .session-actions { opacity:1; }
   .session-actions { opacity:0; transition:opacity .2s; }
 
-  /* Prose overrides */
-  .msg-content h1,.msg-content h2,.msg-content h3 { color:#e2e8f0; font-weight:700; margin:.5rem 0 .3rem; }
-  .msg-content p  { margin:.35rem 0; color:#cbd5e1; line-height:1.7; }
-  .msg-content code { background:#1e293b; color:#a5f3fc; padding:.15em .4em; border-radius:.3em; font-size:.82em; font-family:'JetBrains Mono',monospace; }
-  .msg-content pre { background:#0f172a; border:1px solid #334155; border-radius:.75rem; padding:1rem; margin:.5rem 0; overflow-x:auto; position:relative; }
-  .msg-content pre code { background:transparent; color:#94a3b8; padding:0; font-size:.82em; }
-  .msg-content ul,ol { padding-left:1.4rem; color:#cbd5e1; }
+  /* Prose overrides — dark mode (default dark-first design) */
+  .msg-content h1,.msg-content h2,.msg-content h3 { font-weight:700; margin:.5rem 0 .3rem; }
+  .msg-content p  { margin:.35rem 0; line-height:1.7; }
+  .msg-content code { padding:.15em .4em; border-radius:.3em; font-size:.82em; font-family:'JetBrains Mono',monospace; }
+  .msg-content pre { border-radius:.75rem; padding:1rem; margin:.5rem 0; overflow-x:auto; position:relative; }
+  .msg-content pre code { background:transparent; padding:0; font-size:.82em; }
+  .msg-content ul,ol { padding-left:1.4rem; }
   .msg-content li { margin:.2rem 0; line-height:1.6; }
-  .msg-content strong { color:#f1f5f9; font-weight:700; }
-  .msg-content blockquote { border-left:3px solid #6366f1; padding-left:.85rem; color:#94a3b8; margin:.5rem 0; }
+  .msg-content strong { font-weight:700; }
+  .msg-content blockquote { border-left:3px solid #6366f1; padding-left:.85rem; margin:.5rem 0; }
+
+  /* Dark mode prose colors */
+  .dark .msg-content h1,.dark .msg-content h2,.dark .msg-content h3 { color:#e2e8f0; }
+  .dark .msg-content p { color:#cbd5e1; }
+  .dark .msg-content code { background:#1e293b; color:#a5f3fc; }
+  .dark .msg-content pre { background:#0f172a; border:1px solid #334155; }
+  .dark .msg-content pre code { color:#94a3b8; }
+  .dark .msg-content ul,.dark .msg-content ol,.dark .msg-content li { color:#cbd5e1; }
+  .dark .msg-content strong { color:#f1f5f9; }
+  .dark .msg-content blockquote { color:#94a3b8; }
+
+  /* Light mode prose colors */
+  :not(.dark) .msg-content h1,:not(.dark) .msg-content h2,:not(.dark) .msg-content h3 { color:#1e293b; }
+  :not(.dark) .msg-content p { color:#374151; }
+  :not(.dark) .msg-content code { background:#f1f5f9; color:#0369a1; }
+  :not(.dark) .msg-content pre { background:#f8fafc; border:1px solid #e2e8f0; }
+  :not(.dark) .msg-content pre code { color:#475569; }
+  :not(.dark) .msg-content ul,:not(.dark) .msg-content ol,:not(.dark) .msg-content li { color:#374151; }
+  :not(.dark) .msg-content strong { color:#111827; }
+  :not(.dark) .msg-content blockquote { color:#64748b; }
+
+  /* Code block copy button */
+  .code-copy-btn { position:absolute; top:.5rem; right:.5rem; padding:.2rem .6rem; border-radius:.4rem; font-size:.7rem; font-weight:600; cursor:pointer; transition:all .2s; opacity:0; }
+  .msg-content pre:hover .code-copy-btn { opacity:1; }
+  .dark .code-copy-btn { background:#1e293b; color:#94a3b8; border:1px solid #334155; }
+  .dark .code-copy-btn:hover { background:#334155; color:#e2e8f0; }
+  :not(.dark) .code-copy-btn { background:#e2e8f0; color:#475569; border:1px solid #cbd5e1; }
+  :not(.dark) .code-copy-btn:hover { background:#cbd5e1; color:#1e293b; }
+
+  /* Chat search highlight */
+  .search-highlight { background:rgba(99,102,241,.25); border-radius:.2rem; }
 
   /* Captured image preview in chat */
   .chat-img { border-radius:.75rem; max-width:280px; max-height:200px; object-fit:cover; border:2px solid #334155; cursor:pointer; transition: transform .2s; }
@@ -65,17 +98,16 @@
 {% endblock %}
 
 {% block content %}
-<div class="flex-1 flex w-full h-screen overflow-hidden text-slate-100" style="background:#070c1a;">
+<div class="flex-1 flex w-full h-screen overflow-hidden text-slate-800 dark:text-slate-100 bg-slate-50 dark:bg-[#070c1a] transition-colors">
 
   <!-- ══════════════════════════════════════════════════════════════
        LEFT SIDEBAR: History, Documents, Smart Features
   ══════════════════════════════════════════════════════════════ -->
   <aside id="chat-sidebar"
-    class="w-72 flex-shrink-0 border-r border-slate-800/70 flex flex-col h-full z-20 transition-all duration-300 md:relative absolute inset-y-0 left-0 -translate-x-full md:translate-x-0"
-    style="background:linear-gradient(to bottom,#0d1627,#0a1020);">
+    class="w-72 flex-shrink-0 border-r border-slate-200 dark:border-slate-800/70 flex flex-col h-full z-20 transition-all duration-300 md:relative absolute inset-y-0 left-0 -translate-x-full md:translate-x-0 bg-white dark:bg-[#0a1020]">
 
     <!-- Brand Header -->
-    <div class="p-4 border-b border-slate-800/60 flex items-center justify-between">
+    <div class="p-4 border-b border-slate-200 dark:border-slate-800/60 flex items-center justify-between">
       <a href="/chat/" class="flex items-center gap-2.5">
         <div class="relative w-9 h-9 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0"
              style="background:linear-gradient(135deg,#6366f1,#a855f7,#f59e0b);">
@@ -83,10 +115,10 @@
         </div>
         <div>
           <span class="font-black text-sm brand-gradient">PolyMind</span>
-          <p class="text-[10px] text-slate-500 leading-none">AI Chat Platform</p>
+          <p class="text-[10px] text-slate-400 dark:text-slate-500 leading-none">AI Chat Platform</p>
         </div>
       </a>
-      <button onclick="toggleSidebar(false)" class="md:hidden p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800">
+      <button onclick="toggleSidebar(false)" class="md:hidden p-1.5 text-slate-400 hover:text-slate-800 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
         <i data-lucide="x" class="w-4 h-4"></i>
       </button>
     </div>
@@ -103,51 +135,66 @@
     <!-- Tabs -->
     <div class="px-3 pb-2 flex gap-1">
       <button id="tab-chats" onclick="switchSidebarTab('chats')"
-        class="flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all bg-slate-800 text-white">
+        class="flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-white shadow-sm">
         💬 History
       </button>
       <button id="tab-docs" onclick="switchSidebarTab('docs')"
-        class="flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all text-slate-400 hover:text-white">
+        class="flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white">
         📂 Docs
       </button>
+    </div>
+
+    <!-- Chat Search -->
+    <div class="px-3 pb-2">
+      <div class="relative">
+        <i data-lucide="search" class="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none"></i>
+        <input id="chat-search" type="text" placeholder="Search conversations..."
+          oninput="filterChatHistory(this.value)"
+          class="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border transition-colors
+          bg-slate-100 border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500
+          dark:bg-slate-800/60 dark:border-slate-700/60 dark:text-slate-300 dark:placeholder-slate-500">
+      </div>
     </div>
 
     <!-- Content -->
     <div class="flex-1 overflow-y-auto px-2 py-1 space-y-1 text-xs">
       <div id="chats-list-container">
-        <p class="px-2 py-1 text-[10px] text-slate-500 uppercase tracking-widest font-bold">Recent Sessions</p>
-        <div id="chats-list"><div class="text-slate-500 p-3 text-center">Loading...</div></div>
+        <p class="px-2 py-1 text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-bold">Recent Sessions</p>
+        <div id="chats-list"><div class="text-slate-400 dark:text-slate-500 p-3 text-center">Loading...</div></div>
       </div>
       <div id="docs-list-container" class="hidden">
         <div class="flex items-center justify-between px-2 py-1">
-          <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">My Documents</p>
-          <button onclick="triggerFileUpload()" class="text-indigo-400 hover:text-indigo-300 flex items-center gap-1 text-[10px]">
+          <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-bold">My Documents</p>
+          <button onclick="triggerFileUpload()" class="text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1 text-[10px]">
             <i data-lucide="upload" class="w-3 h-3"></i>Upload
           </button>
         </div>
-        <div id="docs-list"><div class="text-slate-500 p-3 text-center">Loading...</div></div>
+        <div id="docs-list"><div class="text-slate-400 dark:text-slate-500 p-3 text-center">Loading...</div></div>
       </div>
     </div>
 
     <!-- Export Chat -->
     <div class="px-3 pb-2">
       <button onclick="exportConversation()"
-        class="w-full py-2 text-xs font-medium text-slate-400 hover:text-white bg-slate-800/60 hover:bg-slate-700/60 rounded-xl border border-slate-700/40 flex items-center justify-center gap-1.5 transition-all">
+        class="w-full py-2 text-xs font-medium rounded-xl border flex items-center justify-center gap-1.5 transition-all
+        text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 border-slate-200
+        dark:text-slate-400 dark:hover:text-white dark:bg-slate-800/60 dark:hover:bg-slate-700/60 dark:border-slate-700/40">
         <i data-lucide="download" class="w-3.5 h-3.5"></i>Export Conversation
       </button>
     </div>
 
     <!-- User bar -->
-    <div class="p-3 border-t border-slate-800/60 flex items-center gap-2">
-      <a href="/profile/" class="flex items-center gap-2 flex-1 hover:bg-slate-800/60 p-2 rounded-xl transition-colors min-w-0">
+    <div class="p-3 border-t border-slate-200 dark:border-slate-800/60 flex items-center gap-2">
+      <a href="/profile/" class="flex items-center gap-2 flex-1 p-2 rounded-xl transition-colors min-w-0
+        hover:bg-slate-100 dark:hover:bg-slate-800/60">
         <div class="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-xs text-white"
              id="sidebar-avatar" style="background:linear-gradient(135deg,#06b6d4,#6366f1);">U</div>
         <div class="min-w-0">
-          <p class="font-semibold text-white text-xs truncate" id="sidebar-username">My Profile</p>
-          <p class="text-[10px] text-slate-500 truncate" id="sidebar-email">account</p>
+          <p class="font-semibold text-xs truncate text-slate-800 dark:text-white" id="sidebar-username">My Profile</p>
+          <p class="text-[10px] text-slate-400 dark:text-slate-500 truncate" id="sidebar-email">account</p>
         </div>
       </a>
-      <a href="/settings/" class="p-2 text-amber-400 hover:text-amber-300 hover:bg-slate-800 rounded-xl transition-colors" title="API Keys">
+      <a href="/settings/" class="p-2 text-amber-500 hover:text-amber-600 dark:hover:text-amber-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors" title="API Keys">
         <i data-lucide="settings" class="w-4 h-4"></i>
       </a>
     </div>
@@ -156,42 +203,47 @@
   <!-- ══════════════════════════════════════════════════════════════
        MAIN CHAT WORKSPACE
   ══════════════════════════════════════════════════════════════ -->
-  <main class="flex-1 flex flex-col h-full min-w-0 relative" style="background:#070c1a;">
+  <main class="flex-1 flex flex-col h-full min-w-0 relative bg-slate-50 dark:bg-[#070c1a] transition-colors">
 
     <!-- ── TOP HEADER ── -->
-    <header class="h-14 border-b border-slate-800/60 flex items-center px-4 gap-3 flex-shrink-0 glass z-10">
-      <button onclick="toggleSidebar(true)" class="md:hidden p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800">
+    <header class="h-14 border-b border-slate-200 dark:border-slate-800 flex items-center px-4 gap-2.5 flex-shrink-0 bg-white/90 dark:bg-[#0a1020]/90 backdrop-blur-md z-10 transition-colors">
+      <button onclick="toggleSidebar(true)" class="md:hidden p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
         <i data-lucide="menu" class="w-5 h-5"></i>
       </button>
 
       <!-- Model Switcher -->
       <div class="relative">
         <button id="model-btn" onclick="toggleModelDropdown()"
-          class="flex items-center gap-2 py-1.5 px-3 rounded-xl border border-slate-700/80 text-xs font-semibold text-white transition-all hover:border-indigo-500/60 model-glow"
-          style="background:rgba(99,102,241,.1);">
+          class="flex items-center gap-2 py-1.5 px-3 rounded-xl border text-xs font-semibold transition-all
+          bg-indigo-50/80 border-indigo-200 text-indigo-700 hover:border-indigo-300 shadow-sm
+          dark:bg-indigo-950/40 dark:border-indigo-500/40 dark:text-indigo-200 dark:hover:border-indigo-400/60 model-glow">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0" style="box-shadow:0 0 6px #34d399;"></span>
           <span id="model-display">Mistral 7B Tiny</span>
-          <i data-lucide="chevrons-up-down" class="w-3.5 h-3.5 text-slate-400"></i>
+          <i data-lucide="chevrons-up-down" class="w-3.5 h-3.5 text-indigo-400 dark:text-indigo-300"></i>
         </button>
 
         <div id="model-menu"
-          class="hidden absolute top-full left-0 mt-2 w-80 rounded-2xl border border-slate-700/80 shadow-2xl z-50 overflow-hidden"
-          style="background:#0f172a;">
+          class="hidden absolute top-full left-0 mt-2 w-80 rounded-2xl border shadow-2xl z-50 overflow-hidden
+          bg-white border-slate-200 text-slate-800
+          dark:bg-[#0f172a] dark:border-slate-700 dark:text-slate-100">
           <!-- Model search -->
-          <div class="p-2 border-b border-slate-800">
+          <div class="p-2 border-b border-slate-100 dark:border-slate-800">
             <input id="model-search" type="text" placeholder="Search models..." oninput="filterModels(this.value)"
-              class="w-full bg-slate-800/80 text-xs text-white px-3 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 placeholder-slate-500">
+              class="w-full text-xs px-3 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500
+              bg-slate-50 text-slate-800 placeholder-slate-400 border border-slate-200
+              dark:bg-slate-800/80 dark:text-white dark:placeholder-slate-500 dark:border-transparent">
           </div>
           <div id="model-list" class="max-h-80 overflow-y-auto py-1"></div>
         </div>
       </div>
 
       <!-- Active Doc Badge -->
-      <div id="doc-badge" class="hidden items-center gap-1.5 py-1 px-2.5 rounded-lg border text-xs max-w-xs truncate"
-           style="background:rgba(99,102,241,.1); border-color:rgba(99,102,241,.3); color:#a5b4fc;">
+      <div id="doc-badge" class="hidden items-center gap-1.5 py-1 px-2.5 rounded-lg border text-xs max-w-xs truncate
+        bg-amber-50 border-amber-200 text-amber-700
+        dark:bg-amber-950/30 dark:border-amber-500/30 dark:text-amber-300">
         <i data-lucide="file-text" class="w-3.5 h-3.5 flex-shrink-0"></i>
         <span id="doc-badge-title" class="truncate font-medium"></span>
-        <button onclick="detachDoc()" class="ml-1 text-slate-500 hover:text-white">
+        <button onclick="detachDoc()" class="ml-1 text-slate-400 hover:text-slate-700 dark:hover:text-white">
           <i data-lucide="x" class="w-3 h-3"></i>
         </button>
       </div>
@@ -201,28 +253,51 @@
       <!-- Quick Prompt Templates Dropdown -->
       <div class="relative">
         <button onclick="togglePromptTemplates()"
-          class="flex items-center gap-1.5 py-1.5 px-3 rounded-xl border border-slate-700/60 text-xs font-medium text-slate-300 hover:text-white hover:border-slate-600 transition-all bg-slate-800/40"
+          class="flex items-center gap-1.5 py-1.5 px-3 rounded-xl border text-xs font-medium transition-all
+          bg-white border-slate-200 text-slate-700 hover:text-slate-900 hover:bg-slate-50 shadow-sm
+          dark:bg-slate-800/70 dark:border-slate-700/70 dark:text-slate-200 dark:hover:text-white dark:hover:bg-slate-700/70"
           title="Quick Prompts">
-          <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400"></i>
+          <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-500 dark:text-amber-400"></i>
           <span class="hidden sm:inline">Quick Prompts</span>
         </button>
-        <div id="prompt-templates-menu" class="hidden absolute top-full right-0 mt-2 w-64 rounded-2xl border border-slate-700/80 shadow-2xl z-50 overflow-hidden p-1"
-             style="background:#0f172a;">
-          <div class="text-[10px] text-slate-500 uppercase tracking-widest font-bold px-3 py-2">Select a template</div>
+        <div id="prompt-templates-menu" class="hidden absolute top-full right-0 mt-2 w-64 rounded-2xl border shadow-2xl z-50 overflow-hidden p-1
+          bg-white border-slate-200 dark:bg-[#0f172a] dark:border-slate-700">
+          <div class="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-bold px-3 py-2">Select a template</div>
           <div id="prompt-template-list" class="space-y-0.5"></div>
         </div>
       </div>
 
       <a href="/settings/" title="Configure API Keys"
-        class="flex items-center gap-1.5 py-1.5 px-3 rounded-xl border border-slate-700/60 text-xs font-medium text-slate-300 hover:text-white bg-slate-800/40 hover:border-amber-500/40 transition-all">
-        <i data-lucide="key" class="w-3.5 h-3.5 text-amber-400"></i>
+        class="flex items-center gap-1.5 py-1.5 px-3 rounded-xl border text-xs font-medium transition-all
+        bg-white border-slate-200 text-slate-700 hover:text-slate-900 hover:bg-slate-50 shadow-sm
+        dark:bg-slate-800/70 dark:border-slate-700/70 dark:text-slate-200 dark:hover:text-white dark:hover:bg-slate-700/70">
+        <i data-lucide="key" class="w-3.5 h-3.5 text-amber-500 dark:text-amber-400"></i>
         <span class="hidden sm:inline">API Keys</span>
       </a>
+
       <a href="/profile/"
-        class="flex items-center gap-1.5 py-1.5 px-3 rounded-xl border border-slate-700/60 text-xs font-medium text-slate-300 hover:text-white bg-slate-800/40 hover:border-emerald-500/40 transition-all">
-        <i data-lucide="user" class="w-3.5 h-3.5 text-emerald-400"></i>
+        class="flex items-center gap-1.5 py-1.5 px-3 rounded-xl border text-xs font-medium transition-all
+        bg-white border-slate-200 text-slate-700 hover:text-slate-900 hover:bg-slate-50 shadow-sm
+        dark:bg-slate-800/70 dark:border-slate-700/70 dark:text-slate-200 dark:hover:text-white dark:hover:bg-slate-700/70">
+        <i data-lucide="user" class="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400"></i>
         <span class="hidden sm:inline">Profile</span>
       </a>
+
+      <!-- Theme Toggle -->
+      <button onclick="ThemeManager.toggle()" title="Toggle theme"
+        class="theme-btn w-8 h-8 rounded-xl border text-xs font-medium transition-all flex items-center justify-center
+        bg-white border-slate-200 text-slate-700 hover:text-amber-500 hover:bg-slate-50 shadow-sm
+        dark:bg-slate-800/70 dark:border-slate-700/70 dark:text-slate-200 dark:hover:text-amber-400 dark:hover:bg-slate-700/70">
+        <i data-lucide="sun" class="w-4 h-4 text-amber-400"></i>
+      </button>
+
+      <!-- Keyboard Shortcuts -->
+      <button onclick="toggleShortcutsModal()" title="Keyboard shortcuts (press ?)"
+        class="w-8 h-8 rounded-xl border text-xs font-bold transition-all flex items-center justify-center
+        bg-white border-slate-200 text-slate-700 hover:text-slate-900 hover:bg-slate-50 shadow-sm
+        dark:bg-slate-800/70 dark:border-slate-700/70 dark:text-slate-200 dark:hover:text-white dark:hover:bg-slate-700/70">
+        ?
+      </button>
     </header>
 
     <!-- ── MESSAGES AREA ── -->
@@ -239,10 +314,10 @@
             <i data-lucide="brain" class="w-9 h-9 text-white"></i>
           </div>
         </div>
-        <h2 class="text-3xl font-black text-white mb-2">
+        <h2 class="text-3xl font-black text-slate-800 dark:text-white mb-2">
           Welcome to <span class="brand-gradient">PolyMind</span>
         </h2>
-        <p class="text-slate-400 text-sm max-w-sm mx-auto leading-relaxed mb-8">
+        <p class="text-slate-600 dark:text-slate-400 text-sm max-w-sm mx-auto leading-relaxed mb-8">
           Multi-model AI chat platform with document intelligence, voice input, image analysis, and smart context routing.
         </p>
 
@@ -380,7 +455,7 @@
           <textarea id="chat-input" rows="1"
             placeholder="Ask a question, describe an image, or speak your query..."
             class="flex-1 bg-transparent text-sm text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 resize-none max-h-40 py-2.5 px-1 focus:outline-none leading-relaxed"
-            onkeydown="handleKeydown(event)" oninput="autoResize(this)"></textarea>
+            onkeydown="handleKeydown(event)" oninput="autoResize(this); updateCharCounter(this.value)"></textarea>
 
           <!-- Right: Voice + Send -->
           <div class="flex flex-col gap-1 pb-1">
@@ -401,7 +476,10 @@
         <!-- Footer row -->
         <div class="flex items-center justify-between mt-2 px-1 text-[10px] text-slate-400 dark:text-slate-600">
           <span id="footer-model">⚡ PolyMind — Multi-Model AI Platform</span>
-          <span>Shift+Enter new line &nbsp;·&nbsp; Enter to send</span>
+          <div class="flex items-center gap-3">
+            <span id="char-counter" class="hidden">0 chars</span>
+            <span>Shift+Enter new line &nbsp;·&nbsp; Enter to send</span>
+          </div>
         </div>
       </div>
     </div>
@@ -492,6 +570,57 @@
 <div id="lightbox" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4"
      onclick="closeLightbox()" style="background:rgba(0,0,0,.9); backdrop-filter:blur(8px);">
   <img id="lightbox-img" src="" alt="" class="max-w-full max-h-full rounded-2xl object-contain shadow-2xl">
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     KEYBOARD SHORTCUTS MODAL
+══════════════════════════════════════════════════════════════ -->
+<div id="shortcuts-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+     onclick="if(event.target===this) toggleShortcutsModal()">
+  <div class="w-full max-w-sm rounded-2xl border shadow-2xl p-6 transition-colors
+    bg-white border-slate-200 dark:bg-slate-900 dark:border-slate-700/70">
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center gap-2">
+        <div class="w-7 h-7 rounded-lg flex items-center justify-center bg-indigo-100 dark:bg-indigo-500/20">
+          <i data-lucide="keyboard" class="w-4 h-4 text-indigo-600 dark:text-indigo-400"></i>
+        </div>
+        <h3 class="font-bold text-sm text-slate-800 dark:text-white">Keyboard Shortcuts</h3>
+      </div>
+      <button onclick="toggleShortcutsModal()" class="text-slate-400 hover:text-slate-700 dark:hover:text-white">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+    </div>
+    <div class="space-y-2 text-xs">
+      <div class="flex items-center justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
+        <span class="text-slate-600 dark:text-slate-400">Send message</span>
+        <kbd class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-mono font-bold border border-slate-200 dark:border-slate-700">Enter</kbd>
+      </div>
+      <div class="flex items-center justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
+        <span class="text-slate-600 dark:text-slate-400">New line in input</span>
+        <kbd class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-mono font-bold border border-slate-200 dark:border-slate-700">Shift + Enter</kbd>
+      </div>
+      <div class="flex items-center justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
+        <span class="text-slate-600 dark:text-slate-400">Focus chat input</span>
+        <kbd class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-mono font-bold border border-slate-200 dark:border-slate-700">Ctrl + K</kbd>
+      </div>
+      <div class="flex items-center justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
+        <span class="text-slate-600 dark:text-slate-400">New conversation</span>
+        <kbd class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-mono font-bold border border-slate-200 dark:border-slate-700">Ctrl + N</kbd>
+      </div>
+      <div class="flex items-center justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
+        <span class="text-slate-600 dark:text-slate-400">Toggle theme</span>
+        <kbd class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-mono font-bold border border-slate-200 dark:border-slate-700">Ctrl + D</kbd>
+      </div>
+      <div class="flex items-center justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
+        <span class="text-slate-600 dark:text-slate-400">Export conversation</span>
+        <kbd class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-mono font-bold border border-slate-200 dark:border-slate-700">Ctrl + E</kbd>
+      </div>
+      <div class="flex items-center justify-between py-1.5">
+        <span class="text-slate-600 dark:text-slate-400">Close modals / menus</span>
+        <kbd class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-mono font-bold border border-slate-200 dark:border-slate-700">Escape</kbd>
+      </div>
+    </div>
+  </div>
 </div>
 
 {% endblock %}
@@ -664,6 +793,7 @@ async function loadChatHistory() {
     const res = await API.fetch('/api/documents/chats/');
     if (!res.ok) return;
     const sessions = await res.json();
+    _allSessions = sessions; // cache for search filter
     const c = document.getElementById('chats-list');
     if (!sessions.length) { c.innerHTML='<div class="text-slate-400 dark:text-slate-600 p-3 text-center text-xs">No conversations yet</div>'; return; }
     c.innerHTML = sessions.map(s => `
@@ -1103,14 +1233,37 @@ function appendAI(md, sources=[], modelUsed=null) {
       <i data-lucide="brain" class="w-4 h-4 text-indigo-300"></i>
     </div>
     <div class="flex-1 min-w-0 max-w-[88%] rounded-2xl rounded-tl-none p-4 border border-slate-200 dark:border-slate-800/80 text-sm bg-white dark:bg-[#0f172a]/85 shadow-sm dark:shadow-none">
-      <div class="flex items-center gap-1 mb-2.5">
-        <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400">PolyMind</span>${modelBadge}
+      <div class="flex items-center justify-between gap-1 mb-2.5">
+        <div class="flex items-center gap-1">
+          <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400">PolyMind</span>${modelBadge}
+        </div>
+        <button onclick="copyMessage(this)" title="Copy response"
+          class="p-1 rounded text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex-shrink-0">
+          <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+        </button>
       </div>
       <div class="msg-content leading-relaxed">${html}</div>
       ${srcHtml}
     </div>`;
   list.appendChild(d);
   lucide.createIcons();
+  // Add copy buttons to code blocks
+  d.querySelectorAll('pre').forEach(pre => {
+    if (!pre.querySelector('.code-copy-btn')) {
+      const btn = document.createElement('button');
+      btn.className = 'code-copy-btn';
+      btn.textContent = 'Copy';
+      btn.onclick = () => {
+        const code = pre.querySelector('code');
+        navigator.clipboard.writeText(code ? code.innerText : pre.innerText).then(() => {
+          btn.textContent = 'Copied!';
+          setTimeout(() => btn.textContent = 'Copy', 1500);
+        });
+      };
+      pre.style.position = 'relative';
+      pre.appendChild(btn);
+    }
+  });
   scrollDown();
 }
 
@@ -1168,6 +1321,7 @@ function handleKeydown(e) {
 function autoResize(el) {
   el.style.height='auto';
   el.style.height = Math.min(el.scrollHeight, 160)+'px';
+  updateCharCounter(el.value);
 }
 
 function scrollDown() {
@@ -1178,6 +1332,79 @@ function scrollDown() {
 function escHtml(s) {
   if (!s) return '';
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ════════════════════════════════════════════════════════════════
+   CHARACTER COUNTER
+════════════════════════════════════════════════════════════════ */
+function updateCharCounter(val) {
+  const el = document.getElementById('char-counter');
+  if (!el) return;
+  const len = (val || '').length;
+  if (len > 0) {
+    el.classList.remove('hidden');
+    el.textContent = len + (len >= 2000 ? ' ⚠️' : ' chars');
+    el.style.color = len >= 2000 ? '#ef4444' : len >= 1500 ? '#f59e0b' : '';
+  } else {
+    el.classList.add('hidden');
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   COPY AI MESSAGE
+════════════════════════════════════════════════════════════════ */
+function copyMessage(btn) {
+  const bubble = btn.closest('[class*="rounded-2xl"]');
+  const content = bubble ? bubble.querySelector('.msg-content') : null;
+  const text = content ? content.innerText : '';
+  navigator.clipboard.writeText(text).then(() => {
+    btn.innerHTML = '<i data-lucide="check" class="w-3.5 h-3.5 text-emerald-500"></i>';
+    lucide.createIcons();
+    setTimeout(() => {
+      btn.innerHTML = '<i data-lucide="copy" class="w-3.5 h-3.5"></i>';
+      lucide.createIcons();
+    }, 1500);
+  }).catch(() => showToast('Copy failed','error'));
+}
+
+/* ════════════════════════════════════════════════════════════════
+   CHAT SEARCH / FILTER
+════════════════════════════════════════════════════════════════ */
+let _allSessions = [];
+
+async function filterChatHistory(query) {
+  const c = document.getElementById('chats-list');
+  const q = query.trim().toLowerCase();
+  if (!q) { loadChatHistory(); return; }
+  if (!_allSessions.length) { return; }
+  const filtered = _allSessions.filter(s => (s.title||'Chat').toLowerCase().includes(q));
+  if (!filtered.length) {
+    c.innerHTML = '<div class="text-slate-400 dark:text-slate-600 p-3 text-center text-xs">No matching conversations</div>';
+    return;
+  }
+  c.innerHTML = filtered.map(s => `
+    <div class="session-item group relative flex items-center justify-between p-2 rounded-xl transition-colors cursor-pointer ${currentSessionId===s.id?'bg-indigo-50 dark:bg-indigo-600/20 text-indigo-700 dark:text-indigo-300 font-semibold':'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200'}"
+         onclick="loadSession(${s.id})">
+      <div class="flex items-center gap-2 truncate flex-1 min-w-0 pr-2">
+        <i data-lucide="message-circle" class="w-3.5 h-3.5 flex-shrink-0"></i>
+        <span class="truncate text-xs">${escHtml(s.title||'Chat')}</span>
+      </div>
+      <div class="session-actions flex gap-0.5">
+        <button onclick="deleteSession(event,${s.id})" class="p-1 rounded text-slate-400 hover:text-rose-500" title="Delete">
+          <i data-lucide="trash-2" class="w-3 h-3"></i>
+        </button>
+      </div>
+    </div>`).join('');
+  lucide.createIcons();
+}
+
+/* ════════════════════════════════════════════════════════════════
+   KEYBOARD SHORTCUTS MODAL
+════════════════════════════════════════════════════════════════ */
+function toggleShortcutsModal() {
+  const m = document.getElementById('shortcuts-modal');
+  m.classList.toggle('hidden');
+  if (!m.classList.contains('hidden')) lucide.createIcons();
 }
 
 // Close dropdowns on outside click
@@ -1191,13 +1418,25 @@ document.addEventListener('click', e => {
   if (ptBtn && ptMenu && !ptBtn.contains(e.target) && !ptMenu.contains(e.target)) ptMenu.classList.add('hidden');
 });
 
-// Keyboard: Escape closes camera modal
+// Global keyboard shortcuts
 document.addEventListener('keydown', e => {
   if (e.key==='Escape') {
-    closeCameraModal();
-    closeLightbox();
+    closeCameraModal(); closeLightbox();
     document.getElementById('model-menu').classList.add('hidden');
     document.getElementById('prompt-templates-menu').classList.add('hidden');
+    document.getElementById('shortcuts-modal').classList.add('hidden');
+  }
+  // Ctrl+K — focus input
+  if (e.ctrlKey && e.key==='k') { e.preventDefault(); document.getElementById('chat-input').focus(); }
+  // Ctrl+N — new chat
+  if (e.ctrlKey && e.key==='n') { e.preventDefault(); startNewChat(); }
+  // Ctrl+D — toggle theme
+  if (e.ctrlKey && e.key==='d') { e.preventDefault(); ThemeManager.toggle(); }
+  // Ctrl+E — export
+  if (e.ctrlKey && e.key==='e') { e.preventDefault(); exportConversation(); }
+  // ? — shortcuts modal (not when typing)
+  if (e.key==='?' && !['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) {
+    toggleShortcutsModal();
   }
 });
 </script>

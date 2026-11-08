@@ -3,78 +3,145 @@
 {% block title %}Sign In / Register — PolyMind AI{% endblock %}
 
 {% block content %}
-<div class="min-h-screen w-full flex items-center justify-center p-4 bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950">
-    <div class="w-full max-w-md bg-slate-800/80 backdrop-blur-xl border border-slate-700/60 rounded-2xl p-8 shadow-2xl">
-        <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-indigo-500 to-amber-500 text-white shadow-lg shadow-indigo-500/20 mb-3">
-                <i data-lucide="sparkles" class="w-7 h-7"></i>
-            </div>
-            <h1 class="text-2xl font-bold text-white tracking-tight">PolyMind AI</h1>
-            <p class="text-slate-400 text-sm mt-1">Multi-Model LLM & Intelligent Document Chat</p>
-        </div>
+<!-- Floating theme toggle -->
+<button onclick="ThemeManager.toggle()"
+  class="theme-btn fixed top-4 right-4 z-50 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/90 dark:bg-slate-800/90 backdrop-blur shadow-lg transition-all flex items-center justify-center">
+  <i data-lucide="sun" class="w-4 h-4 text-amber-400"></i>
+</button>
 
-        <!-- Toggle Tabs -->
-        <div class="flex bg-slate-900/80 p-1 rounded-xl mb-6 border border-slate-700/50">
-            <button id="tab-login" onclick="switchAuthTab('login')" class="flex-1 py-2 text-sm font-semibold rounded-lg transition-all text-white bg-indigo-600 shadow">
-                Sign In
-            </button>
-            <button id="tab-register" onclick="switchAuthTab('register')" class="flex-1 py-2 text-sm font-semibold rounded-lg transition-all text-slate-400 hover:text-white">
-                Register
-            </button>
-        </div>
+<div class="min-h-screen w-full flex items-center justify-center p-4 transition-colors
+  bg-gradient-to-br from-indigo-50/80 via-white to-slate-100
+  dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950">
 
-        <!-- Login Form -->
-        <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
-            <div>
-                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Email Address</label>
-                <input type="email" id="login-email" required placeholder="user@example.com"
-                       class="w-full bg-slate-900/60 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
-            </div>
-            <div>
-                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Password</label>
-                <input type="password" id="login-password" required placeholder="••••••••"
-                       class="w-full bg-slate-900/60 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
-            </div>
-            <button type="submit" id="btn-login-submit"
-                    class="w-full mt-2 py-3 px-4 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-medium rounded-xl shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-2">
-                <span>Sign In to Chat</span>
-                <i data-lucide="arrow-right" class="w-4 h-4"></i>
-            </button>
-        </form>
+  <!-- Decorative blobs -->
+  <div class="pointer-events-none fixed inset-0 overflow-hidden">
+    <div class="absolute -top-32 -left-32 w-96 h-96 rounded-full opacity-20 blur-3xl bg-indigo-400 dark:bg-indigo-700"></div>
+    <div class="absolute -bottom-32 -right-32 w-96 h-96 rounded-full opacity-20 blur-3xl bg-purple-400 dark:bg-purple-800"></div>
+  </div>
 
-        <!-- Register Form -->
-        <form id="form-register" onsubmit="handleRegister(event)" class="space-y-4 hidden">
-            <div>
-                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Username</label>
-                <input type="text" id="reg-username" required placeholder="johndoe"
-                       class="w-full bg-slate-900/60 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
-            </div>
-            <div>
-                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Email Address</label>
-                <input type="email" id="reg-email" required placeholder="user@example.com"
-                       class="w-full bg-slate-900/60 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
-            </div>
-            <div>
-                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Password</label>
-                <input type="password" id="reg-password" required placeholder="••••••••"
-                       class="w-full bg-slate-900/60 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
-            </div>
-            <div>
-                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Confirm Password</label>
-                <input type="password" id="reg-password-confirm" required placeholder="••••••••"
-                       class="w-full bg-slate-900/60 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
-            </div>
-            <button type="submit" id="btn-reg-submit"
-                    class="w-full mt-2 py-3 px-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-medium rounded-xl shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center gap-2">
-                <span>Create Account</span>
-                <i data-lucide="user-plus" class="w-4 h-4"></i>
-            </button>
-        </form>
+  <div class="relative w-full max-w-md backdrop-blur-xl rounded-2xl p-8 shadow-2xl transition-colors
+    bg-white/90 border border-slate-200/80
+    dark:bg-slate-800/80 dark:border-slate-700/60">
 
-        <p class="text-center text-xs text-slate-500 mt-6">
-            Supports Mistral AI (Tiny, Small, Medium, Large, Codestral), OpenAI, Gemini & Groq
-        </p>
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl
+        bg-gradient-to-tr from-indigo-500 to-amber-500 text-white shadow-lg shadow-indigo-500/20 mb-3">
+        <i data-lucide="sparkles" class="w-7 h-7"></i>
+      </div>
+      <h1 class="text-2xl font-bold tracking-tight text-slate-800 dark:text-white">PolyMind AI</h1>
+      <p class="text-sm mt-1 text-slate-500 dark:text-slate-400">Multi-Model LLM &amp; Intelligent Document Chat</p>
     </div>
+
+    <!-- Toggle Tabs -->
+    <div class="flex p-1 rounded-xl mb-6 border transition-colors
+      bg-slate-100 border-slate-200
+      dark:bg-slate-900/80 dark:border-slate-700/50">
+      <button id="tab-login" onclick="switchAuthTab('login')"
+        class="flex-1 py-2 text-sm font-semibold rounded-lg transition-all text-white bg-indigo-600 shadow">
+        Sign In
+      </button>
+      <button id="tab-register" onclick="switchAuthTab('register')"
+        class="flex-1 py-2 text-sm font-semibold rounded-lg transition-all
+        text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">
+        Register
+      </button>
+    </div>
+
+    <!-- Login Form -->
+    <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
+      <div>
+        <label class="block text-xs font-semibold uppercase tracking-wider mb-1.5
+          text-slate-700 dark:text-slate-300">Email Address</label>
+        <input type="email" id="login-email" required placeholder="user@example.com"
+          class="w-full rounded-xl px-4 py-2.5 text-sm border transition-all
+          bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:outline-none
+          dark:bg-slate-900/60 dark:border-slate-700 dark:text-white dark:placeholder-slate-500">
+      </div>
+      <div>
+        <label class="block text-xs font-semibold uppercase tracking-wider mb-1.5
+          text-slate-700 dark:text-slate-300">Password</label>
+        <div class="relative">
+          <input type="password" id="login-password" required placeholder="••••••••"
+            class="w-full rounded-xl px-4 py-2.5 text-sm border transition-all pr-10
+            bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:outline-none
+            dark:bg-slate-900/60 dark:border-slate-700 dark:text-white dark:placeholder-slate-500">
+          <button type="button" onclick="togglePwd('login-password', this)"
+            class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
+            <i data-lucide="eye" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+      <button type="submit" id="btn-login-submit"
+        class="w-full mt-2 py-3 px-4 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500
+        text-white font-medium rounded-xl shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-2">
+        <span>Sign In to Chat</span>
+        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+      </button>
+    </form>
+
+    <!-- Register Form -->
+    <form id="form-register" onsubmit="handleRegister(event)" class="space-y-4 hidden">
+      <div>
+        <label class="block text-xs font-semibold uppercase tracking-wider mb-1.5
+          text-slate-700 dark:text-slate-300">Username</label>
+        <input type="text" id="reg-username" required placeholder="johndoe"
+          class="w-full rounded-xl px-4 py-2.5 text-sm border transition-all
+          bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:outline-none
+          dark:bg-slate-900/60 dark:border-slate-700 dark:text-white dark:placeholder-slate-500">
+      </div>
+      <div>
+        <label class="block text-xs font-semibold uppercase tracking-wider mb-1.5
+          text-slate-700 dark:text-slate-300">Email Address</label>
+        <input type="email" id="reg-email" required placeholder="user@example.com"
+          class="w-full rounded-xl px-4 py-2.5 text-sm border transition-all
+          bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:outline-none
+          dark:bg-slate-900/60 dark:border-slate-700 dark:text-white dark:placeholder-slate-500">
+      </div>
+      <div>
+        <label class="block text-xs font-semibold uppercase tracking-wider mb-1.5
+          text-slate-700 dark:text-slate-300">Password</label>
+        <div class="relative">
+          <input type="password" id="reg-password" required placeholder="••••••••" oninput="checkPwdStrength(this.value)"
+            class="w-full rounded-xl px-4 py-2.5 text-sm border transition-all pr-10
+            bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:outline-none
+            dark:bg-slate-900/60 dark:border-slate-700 dark:text-white dark:placeholder-slate-500">
+          <button type="button" onclick="togglePwd('reg-password', this)"
+            class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
+            <i data-lucide="eye" class="w-4 h-4"></i>
+          </button>
+        </div>
+        <!-- Password strength indicator -->
+        <div id="pwd-strength-bar" class="mt-1.5 h-1 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden hidden">
+          <div id="pwd-strength-fill" class="h-full rounded-full transition-all duration-300" style="width:0%"></div>
+        </div>
+        <p id="pwd-strength-label" class="text-[10px] mt-0.5 hidden text-slate-500"></p>
+      </div>
+      <div>
+        <label class="block text-xs font-semibold uppercase tracking-wider mb-1.5
+          text-slate-700 dark:text-slate-300">Confirm Password</label>
+        <div class="relative">
+          <input type="password" id="reg-password-confirm" required placeholder="••••••••"
+            class="w-full rounded-xl px-4 py-2.5 text-sm border transition-all pr-10
+            bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:outline-none
+            dark:bg-slate-900/60 dark:border-slate-700 dark:text-white dark:placeholder-slate-500">
+          <button type="button" onclick="togglePwd('reg-password-confirm', this)"
+            class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
+            <i data-lucide="eye" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+      <button type="submit" id="btn-reg-submit"
+        class="w-full mt-2 py-3 px-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500
+        text-white font-medium rounded-xl shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center gap-2">
+        <span>Create Account</span>
+        <i data-lucide="user-plus" class="w-4 h-4"></i>
+      </button>
+    </form>
+
+    <p class="text-center text-xs mt-6 text-slate-400 dark:text-slate-500">
+      Supports Mistral AI &middot; OpenAI &middot; Gemini &middot; Groq
+    </p>
+  </div>
 </div>
 {% endblock %}
 
@@ -84,42 +151,82 @@
         window.location.href = '/chat/';
     }
 
+    /* ── Password show/hide ── */
+    function togglePwd(fieldId, btn) {
+        const inp = document.getElementById(fieldId);
+        const isHidden = inp.type === 'password';
+        inp.type = isHidden ? 'text' : 'password';
+        btn.innerHTML = isHidden
+            ? '<i data-lucide="eye-off" class="w-4 h-4"></i>'
+            : '<i data-lucide="eye" class="w-4 h-4"></i>';
+        lucide.createIcons();
+    }
+
+    /* ── Password strength checker ── */
+    function checkPwdStrength(val) {
+        const bar   = document.getElementById('pwd-strength-bar');
+        const fill  = document.getElementById('pwd-strength-fill');
+        const label = document.getElementById('pwd-strength-label');
+        if (!val) { bar.classList.add('hidden'); label.classList.add('hidden'); return; }
+        bar.classList.remove('hidden'); label.classList.remove('hidden');
+
+        let score = 0;
+        if (val.length >= 8)         score++;
+        if (/[A-Z]/.test(val))       score++;
+        if (/[0-9]/.test(val))       score++;
+        if (/[^A-Za-z0-9]/.test(val)) score++;
+
+        const levels = [
+            { pct:'25%', color:'#ef4444', text:'Weak' },
+            { pct:'50%', color:'#f59e0b', text:'Fair' },
+            { pct:'75%', color:'#3b82f6', text:'Good' },
+            { pct:'100%', color:'#10b981', text:'Strong' },
+        ];
+        const lv = levels[score - 1] || levels[0];
+        fill.style.width = lv.pct;
+        fill.style.background = lv.color;
+        label.textContent = lv.text;
+        label.style.color  = lv.color;
+    }
+
+    /* ── Tab switching ── */
     function switchAuthTab(tab) {
         const loginForm = document.getElementById('form-login');
-        const regForm = document.getElementById('form-register');
-        const tabLogin = document.getElementById('tab-login');
-        const tabReg = document.getElementById('tab-register');
+        const regForm   = document.getElementById('form-register');
+        const tabLogin  = document.getElementById('tab-login');
+        const tabReg    = document.getElementById('tab-register');
+        const inactiveBase = 'flex-1 py-2 text-sm font-semibold rounded-lg transition-all text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white';
+        const activeBase   = 'flex-1 py-2 text-sm font-semibold rounded-lg transition-all text-white shadow';
 
         if (tab === 'login') {
             loginForm.classList.remove('hidden');
             regForm.classList.add('hidden');
-            tabLogin.className = 'flex-1 py-2 text-sm font-semibold rounded-lg transition-all text-white bg-indigo-600 shadow';
-            tabReg.className = 'flex-1 py-2 text-sm font-semibold rounded-lg transition-all text-slate-400 hover:text-white';
+            tabLogin.className = activeBase + ' bg-indigo-600';
+            tabReg.className   = inactiveBase;
         } else {
             loginForm.classList.add('hidden');
             regForm.classList.remove('hidden');
-            tabReg.className = 'flex-1 py-2 text-sm font-semibold rounded-lg transition-all text-white bg-emerald-600 shadow';
-            tabLogin.className = 'flex-1 py-2 text-sm font-semibold rounded-lg transition-all text-slate-400 hover:text-white';
+            tabReg.className   = activeBase + ' bg-emerald-600';
+            tabLogin.className = inactiveBase;
         }
         lucide.createIcons();
     }
 
+    /* ── Login ── */
     async function handleLogin(e) {
         e.preventDefault();
-        const email = document.getElementById('login-email').value.trim();
+        const email    = document.getElementById('login-email').value.trim();
         const password = document.getElementById('login-password').value;
-        const btn = document.getElementById('btn-login-submit');
+        const btn      = document.getElementById('btn-login-submit');
 
         btn.disabled = true;
         btn.innerHTML = `<span>Signing In...</span>`;
 
         try {
-            const res = await fetch('/api/users/login/', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+            const res  = await fetch('/api/users/login/', {
+                method:'POST', headers:{'Content-Type':'application/json'},
                 body: JSON.stringify({ email, password })
             });
-
             const data = await res.json();
             if (res.ok) {
                 API.setTokens(data.access, data.refresh);
@@ -137,32 +244,28 @@
         }
     }
 
+    /* ── Register ── */
     async function handleRegister(e) {
         e.preventDefault();
-        const username = document.getElementById('reg-username').value.trim();
-        const email = document.getElementById('reg-email').value.trim();
-        const password = document.getElementById('reg-password').value;
+        const username  = document.getElementById('reg-username').value.trim();
+        const email     = document.getElementById('reg-email').value.trim();
+        const password  = document.getElementById('reg-password').value;
         const password2 = document.getElementById('reg-password-confirm').value;
-        const btn = document.getElementById('btn-reg-submit');
+        const btn       = document.getElementById('btn-reg-submit');
 
-        if (password !== password2) {
-            showToast('Passwords do not match', 'error');
-            return;
-        }
+        if (password !== password2) { showToast('Passwords do not match', 'error'); return; }
 
         btn.disabled = true;
         btn.innerHTML = `<span>Creating Account...</span>`;
 
         try {
-            const res = await fetch('/api/users/register/', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+            const res  = await fetch('/api/users/register/', {
+                method:'POST', headers:{'Content-Type':'application/json'},
                 body: JSON.stringify({ username, email, password, password2 })
             });
-
             const data = await res.json();
             if (res.ok) {
-                showToast('Account registered successfully! Please log in.', 'success');
+                showToast('Account created! Please log in.', 'success');
                 switchAuthTab('login');
                 document.getElementById('login-email').value = email;
             } else {
@@ -179,4 +282,3 @@
     }
 </script>
 {% endblock %}
-

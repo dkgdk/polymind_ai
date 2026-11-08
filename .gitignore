@@ -1,0 +1,12 @@
+# .gitignore
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.env
+db.sqlite3
+media/
+staticfiles/
+chroma_db/
+*.log
+.DS_Store

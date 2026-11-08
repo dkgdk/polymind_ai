@@ -24,8 +24,8 @@
         <div class="flex items-center gap-2">
             <!-- Theme toggle button -->
             <button onclick="ThemeManager.toggle()"
-                class="p-2 text-slate-500 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg border border-slate-200 dark:border-slate-700 transition-colors flex items-center gap-1.5" title="Toggle Theme">
-                <i data-lucide="sun" class="w-4 h-4 text-amber-500 dark:text-amber-400 theme-toggle-icon"></i>
+                class="theme-btn p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors flex items-center justify-center" title="Toggle Theme">
+                <i data-lucide="sun" class="w-4 h-4 text-amber-400"></i>
             </button>
             <a href="/profile/" class="px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg border border-slate-200 dark:border-slate-700 transition-colors flex items-center gap-1.5">
                 <i data-lucide="user" class="w-3.5 h-3.5"></i>
@@ -178,15 +178,6 @@
             <!-- Save Action Button -->
             <div class="flex items-center justify-end gap-3 pt-2">
                 <a href="/chat/" class="px-5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 text-sm font-medium transition-colors">
-                    Cancel
-                </a>
-                <button type="submit" id="btn-save-settings"
-                        class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm shadow-lg shadow-indigo-600/30 transition-all flex items-center gap-2">
-                    <i data-lucide="check" class="w-4 h-4"></i>
-                    <span>Save Configuration</span>
-                </button>
-            </div>
-        </form>
                     Cancel
                 </a>
                 <button type="submit" id="btn-save-settings"
