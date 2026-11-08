@@ -134,12 +134,19 @@ Open **http://127.0.0.1:8000** → Register → Start chatting!
 
 ## 🤖 Supported AI Models
 
-### Mistral AI (Native API or via OpenRouter)
-- `mistral-tiny` — Mistral 7B, fast and efficient
-- `mistral-small-latest` — Mistral Small (24B), balanced performance
-- `mistral-medium-latest` — Mistral Medium, high reasoning
-- `mistral-large-latest` — Mistral Large 2, 128k context flagship
-- `codestral-latest` — Code-specialized Mistral model
+### OpenRouter (Free Tier Models)
+- `openrouter/free` — Dynamic Auto-Router to active free models
+- `mistralai/mistral-small-24b-instruct-2501:free` — Mistral Small 3 24B
+- `mistralai/mistral-nemo:free` — Mistral Nemo 12B (128k context)
+- `google/gemini-2.0-flash-exp:free` — Next-gen Google multimodal
+- `meta-llama/llama-3.3-70b-instruct:free` — Llama 3.3 70B
+- `deepseek/deepseek-r1:free` — DeepSeek R1 reasoning
+- `qwen/qwen-2.5-coder-32b-instruct:free` — Qwen 2.5 Coder 32B
+
+### Mistral AI (Native API Key console.mistral.ai)
+- `mistral-small-latest` — Mistral Small (24B Latest)
+- `mistral-large-latest` — Mistral Large 2 (Flagship 128k)
+- `codestral-latest` — Codestral Code Specialist
 
 ### OpenAI
 - `gpt-4o-mini` — Fast multimodal

@@ -12,32 +12,90 @@ import re
 
 load_dotenv()
 
-# Multi-Model Registry with complete Mistral, OpenAI, Groq versions
+# Multi-Model Registry with complete OpenRouter Free, Mistral, OpenAI, Groq versions
 SUPPORTED_MODELS = [
-    # ── MISTRAL AI MODELS (Direct Mistral API / OpenRouter) ──
+    # ── OPENROUTER 100% FREE MODELS ──
     {
-        'id': 'mistral-tiny',
-        'name': 'Mistral 7B (Tiny)',
-        'provider': 'mistral',
-        'badge': 'Fast & Light',
-        'category': 'Mistral AI',
-        'description': 'Superfast standard Mistral conversational model'
+        'id': 'openrouter/free',
+        'name': 'OpenRouter Free (Auto-Router)',
+        'provider': 'openrouter',
+        'badge': '100% Free',
+        'category': 'OpenRouter Free',
+        'description': 'Auto-routes to the best live free model (never 404s)'
     },
+    {
+        'id': 'meta-llama/llama-3.3-70b-instruct:free',
+        'name': 'Llama 3.3 70B (Free)',
+        'provider': 'openrouter',
+        'badge': 'Free 70B',
+        'category': 'OpenRouter Free',
+        'description': 'Top benchmark 70B intelligence on OpenRouter free tier'
+    },
+    {
+        'id': 'meta-llama/llama-3.2-3b-instruct:free',
+        'name': 'Llama 3.2 3B (Free Fast)',
+        'provider': 'openrouter',
+        'badge': 'Free Fast',
+        'category': 'OpenRouter Free',
+        'description': 'Ultra-fast lightweight conversational model'
+    },
+    {
+        'id': 'deepseek/deepseek-r1:free',
+        'name': 'DeepSeek R1 (Free Reasoning)',
+        'provider': 'openrouter',
+        'badge': 'Reasoning',
+        'category': 'OpenRouter Free',
+        'description': 'DeepSeek open-weights chain-of-thought reasoning'
+    },
+    {
+        'id': 'google/gemini-2.0-flash-exp:free',
+        'name': 'Gemini 2.0 Flash (Free)',
+        'provider': 'openrouter',
+        'badge': 'Google Free',
+        'category': 'OpenRouter Free',
+        'description': 'High-speed multimodal next-gen intelligence'
+    },
+    {
+        'id': 'qwen/qwen-2.5-coder-32b-instruct:free',
+        'name': 'Qwen 2.5 Coder 32B (Free)',
+        'provider': 'openrouter',
+        'badge': 'Code Free',
+        'category': 'OpenRouter Free',
+        'description': 'Specialized coding model on OpenRouter free tier'
+    },
+    {
+        'id': 'nvidia/nemotron-3.5-lightning:free',
+        'name': 'Nvidia Nemotron 3.5 (Free)',
+        'provider': 'openrouter',
+        'badge': 'Fast MoE',
+        'category': 'OpenRouter Free',
+        'description': 'Nvidia high-speed reasoning model'
+    },
+    {
+        'id': 'mistralai/mistral-small-24b-instruct-2501:free',
+        'name': 'Mistral Small 3 (Free)',
+        'provider': 'openrouter',
+        'badge': 'Mistral Free',
+        'category': 'OpenRouter Free',
+        'description': 'Mistral 24B instruction-tuned model on OpenRouter free tier'
+    },
+    {
+        'id': 'mistralai/mistral-nemo:free',
+        'name': 'Mistral Nemo 12B (Free)',
+        'provider': 'openrouter',
+        'badge': '128k Free',
+        'category': 'OpenRouter Free',
+        'description': 'Mistral + NVIDIA 12B model with 128k context on free tier'
+    },
+
+    # ── MISTRAL AI MODELS (Native API) ──
     {
         'id': 'mistral-small-latest',
         'name': 'Mistral Small (24B Latest)',
         'provider': 'mistral',
         'badge': 'Balanced SOTA',
         'category': 'Mistral AI',
-        'description': 'Latest 2025 small flagship by Mistral AI'
-    },
-    {
-        'id': 'mistral-medium-latest',
-        'name': 'Mistral Medium',
-        'provider': 'mistral',
-        'badge': 'High Reasoning',
-        'category': 'Mistral AI',
-        'description': 'Superior multi-lingual reasoning and synthesis'
+        'description': 'Latest small flagship by Mistral AI'
     },
     {
         'id': 'mistral-large-latest',
@@ -54,14 +112,6 @@ SUPPORTED_MODELS = [
         'badge': 'Code & Specs',
         'category': 'Mistral AI',
         'description': 'Trained specifically for structured docs & syntax'
-    },
-    {
-        'id': 'mistralai/mistral-7b-instruct:free',
-        'name': 'Mistral 7B (OpenRouter Free)',
-        'provider': 'openrouter',
-        'badge': '100% Free',
-        'category': 'Mistral AI',
-        'description': 'Free open-source tier via OpenRouter'
     },
 
     # ── OPENAI GPT MODELS ──
@@ -90,25 +140,7 @@ SUPPORTED_MODELS = [
         'description': 'Traditional fast chat model'
     },
 
-    # ── GOOGLE GEMINI MODELS ──
-    {
-        'id': 'google/gemini-2.0-flash-exp:free',
-        'name': 'Gemini 2.0 Flash (Free)',
-        'provider': 'openrouter',
-        'badge': 'Free Next-Gen',
-        'category': 'Google Gemini',
-        'description': 'Google next-gen high-speed multimodal model'
-    },
-
-    # ── META LLAMA & GROQ ──
-    {
-        'id': 'meta-llama/llama-3.3-70b-instruct:free',
-        'name': 'Llama 3.3 70B (Free)',
-        'provider': 'openrouter',
-        'badge': 'Free 70B',
-        'category': 'Meta Llama',
-        'description': 'Top benchmark open-weights intelligence'
-    },
+    # ── GROQ MODELS ──
     {
         'id': 'llama-3.3-70b-versatile',
         'name': 'Groq Llama 3.3 70B',
@@ -121,7 +153,17 @@ SUPPORTED_MODELS = [
 
 
 def resolve_credentials(user=None, model_id=None):
-    selected_model = model_id or (getattr(user, 'preferred_model', None) if user else None) or "mistralai/mistral-7b-instruct:free"
+    selected_model = model_id or (getattr(user, 'preferred_model', None) if user else None) or "openrouter/free"
+
+    # Normalize deprecated or removed OpenRouter model IDs to guaranteed active free router
+    deprecated_models = (
+        'mistral-tiny',
+        'mistralai/mistral-tiny',
+        'mistralai/mistral-7b-instruct:free',
+        'mistralai/mistral-7b-instruct'
+    )
+    if selected_model in deprecated_models:
+        selected_model = "openrouter/free"
 
     # Identify provider
     api_key = None
@@ -130,16 +172,19 @@ def resolve_credentials(user=None, model_id=None):
 
     # Mistral Direct Models
     if selected_model.startswith("mistral-") or selected_model.startswith("codestral-"):
-        provider = "mistral"
-        api_key = (getattr(user, 'mistral_api_key', None) if user else None) or os.getenv('MISTRAL_API_KEY')
-        base_url = "https://api.mistral.ai/v1"
-        # If user has no direct Mistral key but has OpenRouter key, route through openrouter
-        if not api_key:
+        mistral_key = (getattr(user, 'mistral_api_key', None) if user else None) or os.getenv('MISTRAL_API_KEY')
+        if mistral_key:
+            provider = "mistral"
+            api_key = mistral_key
+            base_url = "https://api.mistral.ai/v1"
+        else:
+            # If user has no direct Mistral key but has OpenRouter key, route to OpenRouter free router
             openrouter_key = (getattr(user, 'openrouter_api_key', None) if user else None) or os.getenv('OPENROUTER_API_KEY')
             if openrouter_key:
+                provider = "openrouter"
                 api_key = openrouter_key
                 base_url = "https://openrouter.ai/api/v1"
-                selected_model = f"mistralai/{selected_model}"
+                selected_model = "openrouter/free"
 
     elif selected_model.startswith("gpt-"):
         provider = "openai"
@@ -151,7 +196,7 @@ def resolve_credentials(user=None, model_id=None):
         api_key = (getattr(user, 'groq_api_key', None) if user else None) or os.getenv('GROQ_API_KEY')
         base_url = "https://api.groq.com/openai/v1"
 
-    else:  # OpenRouter free tiers (mistralai/*, meta-llama/*, google/*)
+    else:  # OpenRouter free tiers (openrouter/free, meta-llama/*, google/*, deepseek/*, etc.)
         provider = "openrouter"
         api_key = (getattr(user, 'openrouter_api_key', None) if user else None) or os.getenv('OPENROUTER_API_KEY')
         base_url = "https://openrouter.ai/api/v1"
@@ -179,6 +224,12 @@ def get_llm(user=None, model_id=None):
     }
     if cred['base_url']:
         kwargs['base_url'] = cred['base_url']
+
+    if cred['provider'] == 'openrouter':
+        kwargs['default_headers'] = {
+            'HTTP-Referer': 'http://localhost:8000',
+            'X-Title': 'PolyMind AI'
+        }
 
     return ChatOpenAI(**kwargs)
 

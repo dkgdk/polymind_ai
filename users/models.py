@@ -21,7 +21,7 @@ class CustomUser(AbstractUser):
 
     preferred_model = models.CharField(
         max_length=100,
-        default='mistralai/mistral-7b-instruct:free'
+        default='openrouter/free'
     )
 
     # Email login

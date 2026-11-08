@@ -32,7 +32,7 @@ class SupportedModelsView(APIView):
     def get(self, request):
         return Response({
             'models': SUPPORTED_MODELS,
-            'current_user_model': getattr(request.user, 'preferred_model', 'mistralai/mistral-7b-instruct:free')
+            'current_user_model': getattr(request.user, 'preferred_model', 'openrouter/free')
         })
 
 
@@ -300,5 +300,5 @@ class DashboardView(APIView):
             'favourite_count': documents.filter(is_favourite=True).count(),
             'total_questions': total_questions,
             'recent_documents': recent_docs,
-            'preferred_model': getattr(user, 'preferred_model', 'mistralai/mistral-7b-instruct:free')
+            'preferred_model': getattr(user, 'preferred_model', 'openrouter/free')
         })
